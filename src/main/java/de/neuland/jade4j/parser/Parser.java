@@ -9,6 +9,8 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import de.neuland.jade4j.exceptions.JadeParserException;
 import de.neuland.jade4j.lexer.Assignment;
@@ -72,6 +74,7 @@ public class Parser {
 	private Parser extending;
 	private final String filename;
 	private LinkedList<Parser> contexts = new LinkedList<Parser>();
+	private Log log = LogFactory.getLog(Parser.class);
 
 	public Parser(String filename, TemplateLoader templateLoader) throws IOException {
 		this.filename = filename;
@@ -506,9 +509,22 @@ public class Parser {
 				String cleanType = type.replaceAll("^['\"]|['\"]$", "");
 				if (!"text/javascript".equals(cleanType)) {
 					tagNode.setTextOnly(false);
+				} else {
+				    // cft. https://github.com/visionmedia/jade/issues/875
+				    // Jade version 0.31.0 deprecated implicit text only support for scripts and styles. To fix this all you need to do is add a . character after the script or style tag
+				    log.warn(filename + ". line: " + lexer.getLineno() +", "+ "Implicit textOnly for `script` and `style` is deprecated.  Use `script.` or `style.` instead."); 
 				}
+				
 			}
 		}
+		
+	      if ("style".equals(tagNode.getName())) {
+	            if (!dot) {
+	                    // cft. https://github.com/visionmedia/jade/issues/875
+	                    // Jade version 0.31.0 deprecated implicit text only support for scripts and styles. To fix this all you need to do is add a . character after the script or style tag
+	                    log.warn(filename + ". line: " + lexer.getLineno() +", "+ "Implicit textOnly for `script` and `style` is deprecated.  Use `script.` or `style.` instead."); 	                
+	            }
+	        }
 
 		if (peek() instanceof Indent) {
 			if (tagNode.isTextOnly()) {
