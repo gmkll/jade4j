@@ -1,14 +1,22 @@
 mixin foo
-  p.bar One
-  p.baz.quux Two
-  p Three
-  p.bar(class="baz") Four
+  p.bar(attributes) One
+  p.baz.quux(attributes) Two
+  p(attributes) Three
+  p.bar(class="baz")(attributes) Four
 
 body
+  h1 1  
   +foo.hello
+  h1 2
   +foo#world
+  h1 3
   +foo.hello#world
+  h1 4
   +foo.hello.world
-  //- +foo(class="hello")
-  //- +foo.hello(class="world")
+  h1 5
+  +foo(class="hello")
+  h1 6
+  +foo.hello(class="world")
+  h1 7
   +foo
+      

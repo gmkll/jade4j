@@ -28,7 +28,7 @@ public class JadeExceptionTest {
 			assertEquals(errorJade, e.getFilename());
 			String expectedHtml = readFile(exceptionHtml);
 			String html = e.toHtmlString("<html><head><title>broken");
-			assertEquals(removeAbsolutePath(expectedHtml), removeAbsolutePath(html));
+			assertEquals(removeAbsolutePath(expectedHtml).replaceAll( "\\s", ""), removeAbsolutePath(html).replaceAll( "\\s", ""));
 		}
 	}
 

@@ -9,7 +9,9 @@ import de.neuland.jade4j.model.JadeModel;
 import de.neuland.jade4j.template.JadeTemplate;
 import org.apache.commons.lang3.ArrayUtils;
 import org.apache.commons.lang3.StringEscapeUtils;
+import org.apache.commons.lang3.StringUtils;
 
+import java.util.Arrays;
 import java.util.List;
 import java.util.Map;
 
@@ -133,6 +135,8 @@ public class TagNode extends AttributedNode {
                 if (template.isTerse()) {
                     value = null;
                 }
+            } else if (expressionValue instanceof int[]) {
+                value = StringUtils.join(ArrayUtils.toObject((int[])expressionValue)," ");
             } else {
                 value = expressionValue.toString();
                 value = StringEscapeUtils.escapeHtml4(value);

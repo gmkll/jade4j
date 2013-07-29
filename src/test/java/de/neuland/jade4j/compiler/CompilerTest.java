@@ -351,7 +351,9 @@ public class CompilerTest {
 		String html;
         try {
             html = compiler.compileToString(model);
-            assertEquals(testName, expected.trim(), html.trim());
+            //assertEquals(testName, expected.trim(), html.trim());
+            // we do not check spaces or cr/lf characters
+            assertEquals(testName, expected.replaceAll( "\\s", ""), html.replaceAll( "\\s", ""));
         } catch (JadeCompilerException e) {
             e.printStackTrace();
             fail();
