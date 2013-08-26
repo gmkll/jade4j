@@ -12,6 +12,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import de.neuland.jade4j.exceptions.JadeException;
 import de.neuland.jade4j.exceptions.JadeParserException;
 import de.neuland.jade4j.lexer.Assignment;
 import de.neuland.jade4j.lexer.Each;
@@ -318,8 +319,9 @@ public class Parser {
 		try {
 			return new Parser(templateUri.toString(), templateLoader);
 		} catch (IOException e) {
-			throw new JadeParserException(filename, lexer.getLineno(), templateLoader, "the template [" + templateName
-					+ "] could not be opened\n" + e.getMessage());
+		    e.printStackTrace();
+		    throw new JadeParserException(filename, lexer.getLineno(), templateLoader, "the template [" + templateName
+					+ "] could not be opened\n" + e.getMessage(),e);
 		}
 	}
 

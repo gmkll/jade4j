@@ -19,5 +19,9 @@ public class JadeParserException extends JadeException {
 	public JadeParserException(String filename, int lineNumber, TemplateLoader templateLoader, String message) {
 		super(message, filename, lineNumber, templateLoader, null);
 	}
-
+	
+	public JadeParserException(String filename, int lineNumber, TemplateLoader templateLoader, String message, Throwable cause) {
+	    super(message, filename, lineNumber, templateLoader, cause);
+	}
+	
 }

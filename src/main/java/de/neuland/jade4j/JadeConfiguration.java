@@ -14,6 +14,7 @@ import de.neuland.jade4j.exceptions.JadeException;
 import de.neuland.jade4j.expression.ExpressionHandler;
 import de.neuland.jade4j.filter.CDATAFilter;
 import de.neuland.jade4j.filter.Filter;
+import de.neuland.jade4j.filter.JSFilter;
 import de.neuland.jade4j.filter.PlainFilter;
 import de.neuland.jade4j.model.JadeModel;
 import de.neuland.jade4j.parser.Parser;
@@ -27,6 +28,8 @@ public class JadeConfiguration {
 	private static final String FILTER_CDATA = "cdata";
 
 	private static final String FILTER_PLAIN = "plain";
+	
+	private static final String FILTER_JS = "js";
 
 	private boolean prettyPrint = false;
 	private boolean caching = true;
@@ -40,6 +43,7 @@ public class JadeConfiguration {
 	public JadeConfiguration() {
 		setFilter(FILTER_PLAIN, new PlainFilter());
 		setFilter(FILTER_CDATA, new CDATAFilter());
+		setFilter(FILTER_JS, new JSFilter());
 	}
 
 	private Map<String, JadeTemplate> cache = new ConcurrentLinkedHashMap.Builder<String, JadeTemplate>().maximumWeightedCapacity(
@@ -63,6 +67,22 @@ public class JadeConfiguration {
 
 		return createTemplate(name);
 	}
+	
+	/**
+	 * prepare model before processing:
+	 * <li>enrich with filters
+	 * <li>add {@link #sharedVariables}
+	 *  
+	 * @param model the existing model 
+	 * @throws JadeCompilerException
+	 */
+	public void prepareModelTemplate(Map<String, Object> model) throws JadeCompilerException {
+	        JadeModel jadeModel = new JadeModel(sharedVariables);
+	        for (String filterName : filters.keySet()) {
+	            jadeModel.addFilter(filterName, filters.get(filterName));
+	        }
+	        jadeModel.putAll(model);
+	    }
 
 	public void renderTemplate(JadeTemplate template, Map<String, Object> model, Writer writer) throws JadeCompilerException {
 		JadeModel jadeModel = new JadeModel(sharedVariables);
