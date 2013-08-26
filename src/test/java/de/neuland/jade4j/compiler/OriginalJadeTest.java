@@ -18,7 +18,9 @@ import de.neuland.jade4j.JadeConfiguration;
 import de.neuland.jade4j.TestFileHelper;
 import de.neuland.jade4j.exceptions.JadeCompilerException;
 import de.neuland.jade4j.filter.CDATAFilter;
+import de.neuland.jade4j.filter.InlineFilter;
 import de.neuland.jade4j.filter.PlainFilter;
+import de.neuland.jade4j.template.FileTemplateLoader;
 import de.neuland.jade4j.template.JadeTemplate;
 
 public class OriginalJadeTest {
@@ -26,7 +28,7 @@ public class OriginalJadeTest {
     boolean debug = false;
 
 	private String[] manualCompared = new String[] { "attrs", "attrs.js", "code.conditionals", "code.iteration", "comments",
-			"escape-chars", "filters.coffeescript", "filters.less", "filters.markdown", "filters.stylus", "filters.cdata","html", "include-only-text-body",
+			"escape-chars", "filters.coffeescript", "filters.less", "filters.markdown", "filters.stylus", "filters.cdata","html", "inline","include-only-text-body",
 			"include-only-text", "include-with-text-head", "include-with-text", "mixin.blocks", "mixin.merge", "quotes", "script.whitespace", "scripts", "scripts.non-js",
 			"source", "styles", "template", "text-block", "text", "vars", "yield-title", "doctype.default", "doctype.transitional" };
 
@@ -40,6 +42,7 @@ public class OriginalJadeTest {
 		jade.setMode(Jade4J.Mode.XHTML); // original jade uses xhtml by default
 		jade.setFilter("plain", new PlainFilter());
 		jade.setFilter("cdata", new CDATAFilter());
+		jade.setFilter("inline", new InlineFilter(new FileTemplateLoader(TestFileHelper.getOriginalResourcePath(""), "UTF-8")));
 
 		for (File file : files) {
 		    // avoid on windows systems exception of type java.lang.IllegalArgumentException: Illegal character in opaque part at index 2... at java.net.URI.create 

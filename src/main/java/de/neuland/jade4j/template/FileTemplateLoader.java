@@ -31,7 +31,7 @@ public class FileTemplateLoader implements TemplateLoader {
 	private File getFile(String name) {
 		// TODO Security
 		String filename = basePath + name;
-		if (!filename.endsWith( ".css") && !filename.endsWith( ".js") && !filename.endsWith(suffix)) {
+		if (!filename.endsWith( ".html") && !filename.endsWith( ".css") && !filename.endsWith( ".js") && !filename.endsWith(suffix)) {
 			filename += suffix;
 		}
 		return new File(filename);
