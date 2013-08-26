@@ -170,4 +170,8 @@ public class JadeConfiguration {
 		}
 	}
 
+    public void clearCache() {
+        ExpressionHandler.clearCache();
+        cache.clear();
+    }
 }

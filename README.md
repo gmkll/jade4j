@@ -96,7 +96,7 @@ We are using Github for Maven hosting. Just add this repository ...
 <dependency>
   <groupId>de.neuland</groupId>
   <artifactId>jade4j</artifactId>
-  <version>0.3.12</version>
+  <version>0.3.13</version>
 </dependency>
 ```
 
@@ -164,6 +164,12 @@ The `JadeConfiguration` handles template caching for you. If you request the sam
 JadeTemplate t1 = config.getTemplate("index.jade");
 JadeTemplate t2 = config.getTemplate("index.jade");
 t1.equals(t2) // true
+```
+
+You can clear the template and expression cache by calling
+
+```java
+config.clearCache();
 ```
 
 For development mode you can also disable caching completly:

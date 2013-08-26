@@ -4,7 +4,7 @@
 	<modelVersion>4.0.0</modelVersion>
 	<groupId>de.neuland</groupId>
 	<artifactId>jade4j</artifactId>
-	<version>0.3.14</version>
+	<version>0.3.13</version>
 	<name>jade templating engine for Java VM</name>
 	<issueManagement>
 		<url>https://github.com/neuland/jade4j/issues</url>
@@ -70,19 +70,7 @@
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-surefire-plugin</artifactId>
 				<version>2.12</version>
-        <dependencies>
-        <!-- Force using the latest JUnit 47 provider -->
-          <dependency>
-            <groupId>org.apache.maven.surefire</groupId>
-            <artifactId>surefire-junit47</artifactId>
-            <version>2.12</version>
-          </dependency>
-        </dependencies>
 			</plugin>
-      <plugin>
-        <artifactId>maven-resources-plugin</artifactId>
-        <version>2.6</version>
-      </plugin>
 		</plugins>
 	</build>
 

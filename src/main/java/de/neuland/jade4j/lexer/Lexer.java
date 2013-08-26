@@ -55,8 +55,9 @@ public class Lexer {
 	private Reader reader;
 	private final String filename;
 	private final TemplateLoader templateLoader;
+    private String indentType;
 
-	public Lexer(String filename, TemplateLoader templateLoader) throws IOException {
+    public Lexer(String filename, TemplateLoader templateLoader) throws IOException {
 		this.filename = filename;
 		this.templateLoader = templateLoader;
 		reader = templateLoader.getReader(filename);
@@ -458,9 +459,7 @@ public class Lexer {
 	}
 
 	private Token block() {
-        if(scanner.getInput().contains("blockquote")) return null;
-
-		Matcher matcher = scanner.getMatcherForPattern("^block *(?:(prepend|append) +)?([^\\n]*)");
+		Matcher matcher = scanner.getMatcherForPattern("^block\\b *(?:(prepend|append) +)?([^\\n]*)");
 		if (matcher.find(0) && matcher.groupCount() > 1) {
 			String val = matcher.group(1);
 			String mode = StringUtils.isNotBlank(val) ? val : "replace";
@@ -566,6 +565,9 @@ public class Lexer {
 		}
 
 		int index = indexOfDelimiters('(', ')');
+        if (index == 0) {
+            throw new JadeLexerException("invalid attribute definition; missing )", filename, getLineno(), templateLoader);
+        }
 		String string = scanner.getInput().substring(1, index);
 		consume(index + 1);
 
@@ -622,17 +624,20 @@ public class Lexer {
 		} else {
 			// tabs
 			re = "^\\n(\\t*) *";
+            String indentType = "tabs";
 			matcher = scanner.getMatcherForPattern(re);
 
 			// spaces
 			if (matcher.find(0) && matcher.groupCount() < 2) {
 				re = "^\\n( *)";
+                indentType = "spaces";
 				matcher = scanner.getMatcherForPattern(re);
 			}
 
 			// established
 			if (matcher.find(0) && matcher.groupCount() > 0)
 				this.indentRe = re;
+                this.indentType = indentType;
 		}
 
 		if (matcher.find(0) && matcher.groupCount() > 0) {
@@ -644,7 +649,7 @@ public class Lexer {
 			consume(indents + 1);
 
 			if ((indents > 0 && lastIndents > 0 && indents % lastIndents != 0) || scanner.isIntendantionViolated()) {
-				throw new JadeLexerException("invalid indentation", filename, getLineno(), templateLoader);
+				throw new JadeLexerException("invalid indentation; expecting "+indents+" "+indentType, filename, getLineno(), templateLoader);
 			}
 
 			// blank line

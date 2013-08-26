@@ -11,6 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import de.neuland.jade4j.exceptions.JadeLexerException;
 import org.apache.commons.io.FileUtils;
 import org.junit.Test;
 
@@ -315,6 +316,21 @@ public class CompilerTest {
 	public void interpolation() {
 		run("interpolation");
 	}
+
+    @Test
+    public void mixinVariableAttribute() {
+        run("mixin_variable_attribute");
+    }
+
+    @Test
+    public void inlineTextAndContent() {
+        run("inline_text_and_content");
+    }
+
+    @Test(expected = JadeLexerException.class)
+    public void shouldThrowGoodExceptions() {
+        run("invalid");
+    }
 
 	@Test
 	public void xml() {
