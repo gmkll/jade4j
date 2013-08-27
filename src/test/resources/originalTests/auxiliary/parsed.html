@@ -1,0 +1,28 @@
+<script>
+  console.log("foo\nbar");
+#foo = 'bar'
+#:plain
+#  var bar = "#{foo}";  
+#list = [1,2,3]
+#items = [1,2,3]
+#for item, i in items
+#  :plain
+#    var x#{item} = "item-#{i}";
+#
+#each item, i in items
+#  :plain
+#    var li = #{item};
+//:inline
+//  auxiliary/external.js
+</script>
+#html
+#  head
+#    script(src='auxiliary/external.js')
+#  body
+#    a(class=list, id=foo)
+#    ul
+#      li: a(href='#') foo
+#      li: a(href='#') bar
+      <label>Username:<input type="text" name="user[name]"/></label><label>Password:<input type="text" name="user[pass]"/></label>
+#    p baz
+
