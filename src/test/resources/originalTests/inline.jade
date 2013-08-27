@@ -1,10 +1,9 @@
 
 include auxiliary/mixins
 
-mixin foo()
-+foo()
-
 body
+  mixin foo()
+  +foo()
   //include auxiliary/smile.html
   :inline
-    auxiliary/unparsed.html
+    auxiliary/parsed.html

@@ -2,6 +2,7 @@ package de.neuland.jade4j.lexer;
 
 import java.io.IOException;
 import java.io.Reader;
+import java.util.ArrayList;
 import java.util.LinkedList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -56,6 +57,9 @@ public class Lexer {
 	private final String filename;
 	private final TemplateLoader templateLoader;
     private String indentType;
+    private boolean inline= false;
+    private ArrayList<Integer> parsableLines = new ArrayList<Integer>();
+    public boolean debug = false;
 
     public Lexer(String filename, TemplateLoader templateLoader) throws IOException {
 		this.filename = filename;
@@ -69,10 +73,16 @@ public class Lexer {
 		lastIndents = 0;
 		lineno = 1;
 	}
+    
+    public Lexer(String filename, TemplateLoader templateLoader, boolean inline) throws IOException {
+        this( filename, templateLoader ); 
+        this.inline =inline;
+    }
 
 	public Token next() {
 		handleBlankLines();
 		Token token = null;
+	    if (inline) { token = handleInline(); }
 		if (token == null) {
 			token = deferred();
 		}
@@ -425,7 +435,7 @@ public class Lexer {
 	private Token text() {
 		String val = scan("^(?:\\| ?| ?)?([^\\n]+)");
 		if (StringUtils.isNotEmpty(val)) {
-			return new Text(val, lineno);
+		    return new Text(val, lineno);
 		}
 		return null;
 	}
@@ -475,7 +485,7 @@ public class Lexer {
 	private Token include() {
 		String val = scan("^include +([^\\n]+)");
 		if (StringUtils.isNotBlank(val)) {
-			return new Include(val, lineno);
+		    return new Include(val, lineno);
 		}
 		return null;
 	}
@@ -704,4 +714,42 @@ public class Lexer {
 	public boolean getPipeless() {
 		return pipeless;
 	}
+	
+	public Token handleInline() { 
+	    
+        if (debug) System.out.println(lineno + " input>>" + scanner.getInput() + "<<\n--------------");
+        
+        if (parsableLines.size() == 0) {
+            Matcher matcher = scanner.getMatcherForPattern("(?m)^(.*)$");
+            int lnr=0;
+            while (matcher.find() && matcher.groupCount() > 0) {
+                String result =  matcher.group();
+                lnr++;
+                if (debug) System.out.println("match lnr:"+lnr+":>>"+result+"<<\n--------------");
+                Pattern pattern = Pattern.compile("^#.*");
+                Matcher parsedline  = pattern.matcher(result);
+                while (parsedline.find()) {
+                    parsableLines.add( lnr);
+                    if (debug) System.out.println("added lnr:"+lnr+" to parsableLines");
+                }
+            }
+            String newInput = scanner.getInput().replaceAll( "(?m)^#", "" );
+            scanner.setInput( newInput );
+            if (debug)  System.out.println("newInput :"+newInput);
+            
+        }
+        if (debug)  System.out.println("parsableLines.contains( "+ lineno+"):" + parsableLines.contains( lineno ) + "|scanner.isBlankLine():"+ scanner.isBlankLine());
+        
+        if (!parsableLines.contains( lineno ) && !parsableLines.contains( lineno +1 ) && scanner.isNotEmpty()) {
+            if ( scanner.isBlankLine()) {
+                lineno++;
+                consume(1); //return new Newline("newline", lineno);
+            }
+            // pipeless is true in filters
+            return pipelessText();
+        }         
+        return null;
+    }
+	
+	
 }

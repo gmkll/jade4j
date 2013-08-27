@@ -85,6 +85,10 @@ public class Scanner {
     public String getInput() {
         return input;
     }
+    
+    public void setInput(String input) {
+        this.input = input;
+    }
 
     public Matcher getMatcherForPattern(String regexp) {
         Pattern pattern = Pattern.compile(regexp);
@@ -103,5 +107,5 @@ public class Scanner {
     public boolean isAdditionalBlankline() {
         return input.length() > 2 && input.charAt(0) == '\n' && input.charAt(1) == '\n';
     }
-
+   
 }

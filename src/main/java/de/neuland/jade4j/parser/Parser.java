@@ -82,6 +82,13 @@ public class Parser {
 		lexer = new Lexer(filename, templateLoader);
 		getContexts().push(this);
 	}
+	
+	public Parser(String filename, TemplateLoader templateLoader, boolean inline) throws IOException {
+	    this.filename = filename;
+        this.templateLoader = templateLoader;
+        lexer = new Lexer(filename, templateLoader, inline);
+        getContexts().push(this);
+	}
 
 	public Node parse() {
 		BlockNode block = new BlockNode();
@@ -318,7 +325,6 @@ public class Parser {
 		try {
 			return new Parser(templateUri.toString(), templateLoader);
 		} catch (IOException e) {
-		    e.printStackTrace();
 		    throw new JadeParserException(filename, lexer.getLineno(), templateLoader, "the template [" + templateName
 					+ "] could not be opened\n" + e.getMessage(),e);
 		}
